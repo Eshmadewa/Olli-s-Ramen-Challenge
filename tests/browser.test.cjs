@@ -1,0 +1,120 @@
+/* Isolated browser integration checks. Run: node tests/browser.test.cjs */
+const path = require('node:path');
+const fs = require('node:fs');
+const { pathToFileURL } = require('node:url');
+const assert = require('node:assert/strict');
+let playwright;
+try { playwright = require('playwright'); }
+catch { playwright = require(path.join(path.dirname(process.execPath), '..', 'node_modules', 'playwright')); }
+const root = path.resolve(__dirname, '..');
+const out = path.join(root, 'docs', 'screenshots');
+fs.mkdirSync(out, { recursive: true });
+(async () => {
+  const browser = await playwright.chromium.launch({ headless: true, channel: 'chrome' });
+  try {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: 'reduce' });
+    const page = await context.newPage();
+    const errors = [];
+    page.on('pageerror', e => errors.push(String(e)));
+    page.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    page.on('requestfailed', request => errors.push(`Asset failed: ${request.url()}`));
+    const url = pathToFileURL(path.join(root, 'index.html')).href;
+    await page.goto(url);
+    await page.waitForFunction(() => window.ollieGame?.snapshot().artReady);
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).audio.unlocked, false);
+    await page.screenshot({ path: path.join(out, 'home-desktop.png'), fullPage: true });
+    console.log('Home loaded with all sprites; audio locked before interaction.');
+    await page.locator('#start').click();
+    await page.waitForFunction(() => ollieGame.snapshot().phase === 'racing');
+    const before = await page.evaluate(() => ollieGame.snapshot());
+    assert.equal(before.audio.state, 'running');
+    await page.keyboard.press('e');
+    await page.keyboard.press('Space');
+    await page.locator('#scene').click({ position: { x: 350, y: 190 } });
+    await page.locator('#eat').click();
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).racers[0].bites, 4);
+    await page.keyboard.down('e');
+    await page.keyboard.down('e');
+    await page.keyboard.up('e');
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).racers[0].bites, 5);
+    await page.waitForTimeout(1200);
+    assert.ok((await page.evaluate(() => ollieGame.snapshot())).racers.slice(1).every(r => r.bites > 0));
+    await page.screenshot({ path: path.join(out, 'game-desktop.png'), fullPage: true });
+    await page.locator('#pause').click();
+    const pause = await page.evaluate(() => ollieGame.snapshot());
+    await page.waitForTimeout(400);
+    await page.keyboard.press('e');
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).time, pause.time);
+    await page.locator('#resume').click();
+    console.log('E, Space, canvas, button each count once; held-key repeat ignored; AI and pause passed.');
+    for (let level = 0; level < 4; level++) {
+      let state = await page.evaluate(() => ollieGame.snapshot());
+      assert.equal(state.level, level);
+      if (state.phase === 'countdown') await page.waitForFunction(() => ollieGame.snapshot().phase === 'racing');
+      state = await page.evaluate(() => ollieGame.snapshot());
+      for (let i = state.racers[0].bites; i < 100; i++) await page.keyboard.press('e');
+      state = await page.evaluate(() => ollieGame.snapshot());
+      assert.equal(state.racers[0].stage, 'broth');
+      assert.equal(state.winner, null);
+      await page.waitForTimeout(700);
+      await page.screenshot({ path: path.join(out, `level-${level + 1}-broth.png`), fullPage: true });
+      await page.waitForFunction(() => ollieGame.snapshot().phase === 'result');
+      await page.locator('#result').waitFor({ state: 'visible' });
+      state = await page.evaluate(() => ollieGame.snapshot());
+      assert.equal(state.winner, 0);
+      assert.equal(state.unlocked, Math.min(4, level + 2));
+      await page.screenshot({ path: path.join(out, `level-${level + 1}-win.png`), fullPage: true });
+      console.log(`Level ${level + 1}: all 100 presses, broth, win, unlocked progress passed.`);
+      if (level < 3) await page.locator('#next').click();
+    }
+    await page.locator('#back').click();
+    await page.locator('#home-screen').waitFor({ state: 'visible' });
+    await page.reload();
+    await page.waitForFunction(() => ollieGame.snapshot().artReady);
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).unlocked, 4);
+    await page.locator('#sound').click();
+    await page.locator('#music-toggle').uncheck();
+    await page.locator('#effects-toggle').uncheck();
+    await page.locator('#settings-dialog .dialog-done').click();
+    await page.reload();
+    await page.waitForFunction(() => ollieGame.snapshot().artReady);
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).audio.music, false);
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).audio.effects, false);
+    console.log('Progress and independent sound settings persist after reload.');
+    // Fast-forward the isolated browser clock for the real no-input loss flow.
+    await page.clock.install();
+    await page.locator('#start').click();
+    await page.clock.runFor(57000);
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).phase, 'result');
+    assert.notEqual((await page.evaluate(() => ollieGame.snapshot())).winner, 0);
+    await page.screenshot({ path: path.join(out, 'friendly-loss.png'), fullPage: true });
+    await page.locator('#retry').click();
+    assert.equal((await page.evaluate(() => ollieGame.snapshot())).racers[0].bites, 0);
+    console.log('Idle player loses; friendly result and retry work.');
+    for (const width of [320, 390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 844 });
+      await page.clock.runFor(200);
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), `Overflow at ${width}px`);
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.clock.runFor(3300);
+    await page.screenshot({ path: path.join(out, 'game-mobile.png'), fullPage: true });
+    const phone = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+    const mobile = await phone.newPage();
+    mobile.on('pageerror', e => errors.push(String(e)));
+    mobile.on('console', message => { if (message.type() === 'error') errors.push(message.text()); });
+    await mobile.goto(url);
+    await mobile.waitForFunction(() => ollieGame.snapshot().artReady);
+    await mobile.locator('#start').tap();
+    await mobile.waitForFunction(() => ollieGame.snapshot().phase === 'racing');
+    await mobile.locator('#eat').tap();
+    await mobile.locator('#eat').tap();
+    assert.equal((await mobile.evaluate(() => ollieGame.snapshot())).racers[0].bites, 2);
+    assert.ok(await mobile.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+    await mobile.waitForTimeout(800);
+    await mobile.screenshot({ path: path.join(out, 'touch-mobile.png'), fullPage: true });
+    console.log('320–1440px layouts fit; touch input counts once per tap.');
+    assert.deepEqual(errors, []);
+    console.log('PASS: no uncaught browser errors. Screenshots in docs/screenshots.');
+  } finally { await browser.close(); }
+})().catch(error => { console.error(error); process.exitCode = 1; });

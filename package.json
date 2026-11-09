@@ -1,0 +1,13 @@
+{
+  "name": "ollies-ramen-challenge",
+  "version": "1.0.1",
+  "private": true,
+  "description": "A cozy, offline-capable children's ramen racing game",
+  "scripts": {
+    "start": "node serve.cjs",
+    "test": "node --test tests/engine.test.cjs tests/audio.test.cjs",
+    "test:browser": "node tests/browser.test.cjs",
+    "test:art": "node tests/art.test.cjs",
+    "test:fullscreen": "node tests/fullscreen.test.cjs"
+  }
+}

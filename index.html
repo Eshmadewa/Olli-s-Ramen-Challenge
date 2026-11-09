@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fff8ed">
+  <meta name="description" content="Уютное рамэн-приключение Олли, котика и цыплёнка. Четыре вкусных уровня для маленьких чемпионов!">
+  <title>Олли: Рамэн-чемпион!</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="engine.js" defer></script>
+  <script src="art.js" defer></script>
+  <script src="audio.js" defer></script>
+  <script src="fullscreen.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-library" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+    <symbol id="bowl-icon" viewBox="0 0 64 64"><path d="m37 20 18-14M42 24 59 13" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><path d="M9 30h46c-1 17-11 25-23 25S11 47 9 30Z" fill="#ed8f9e" stroke="currentColor" stroke-width="3"/><ellipse cx="32" cy="30" rx="23" ry="7" fill="#f9d98c" stroke="currentColor" stroke-width="3"/><path d="M23 43q3-4 6 0m7 0q3-4 6 0m-13 5q4 4 8 0M20 18q-5-5 0-10m10 12q-5-5 0-10" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></symbol>
+    <symbol id="sound-icon" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4Zm12-1q4 4 0 8m3-11q7 7 0 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="pause-icon" viewBox="0 0 24 24"><path d="M8 5v14m8-14v14" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></symbol>
+    <symbol id="fullscreen-icon" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="fullscreen-exit-icon" viewBox="0 0 24 24"><path d="M4 9h5V4m6 0v5h5M9 20v-5H4m16 0h-5v5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="arrow-icon" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="star-icon" viewBox="0 0 24 24"><path d="m12 2 3 6.5 7 1-5 5 1.2 7-6.2-3.4-6.2 3.4 1.2-7-5-5 7-1Z" fill="currentColor"/></symbol>
+    <symbol id="lock-icon" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 5v2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </defs></svg>
+  <div class="shell">
+    <header class="topbar">
+      <button class="brand" id="brand" aria-label="Олли: Рамэн-чемпион! На главный экран"><svg><use href="#bowl-icon"/></svg><span>Олли<span class="brand-sub">РАМЭН-ЧЕМПИОН!</span></span></button>
+      <div class="top-actions"><span class="cozy-label">Маленькое вкусное приключение</span><button class="icon-button" id="fullscreen" aria-label="На весь экран" title="На весь экран" aria-pressed="false"><svg aria-hidden="true"><use href="#fullscreen-icon"/></svg></button><button class="icon-button" id="sound" aria-label="Настройки музыки и звуков"><svg><use href="#sound-icon"/></svg></button><button class="icon-button" id="help" aria-label="Как играть">?</button></div>
+    </header>
+    <main>
+      <section id="home-screen" aria-labelledby="hero-title">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="tiny-star">✦</span> СЧАСТЬЕ В КАЖДОЙ МИСКЕ</p>
+            <h1 id="hero-title">Олли:<br><span>Рамэн-чемпион!</span></h1>
+            <p class="hero-description">Большая миска, лучшие друзья<br>и одно очень вкусное соревнование.</p>
+            <button class="primary start-button" id="start"><span>Давай играть!</span><svg><use href="#arrow-icon"/></svg></button>
+            <div class="hero-note"><span class="note-heart">♡</span> Каждый может стать чемпионом</div>
+          </div>
+          <div class="hero-art"><img src="assets/reference.png" alt="Олли с длинными тёмными волосами и розовыми заколками, белый котик и жёлтый цыплёнок вместе едят рамэн" fetchpriority="high"><div class="art-sticker"><svg><use href="#star-icon"/></svg><span>Друзья, лапша<br>и чуточку магии!</span></div><span class="art-spark spark-one">✧</span><span class="art-spark spark-two">✧</span></div>
+        </div>
+        <section class="adventure" aria-labelledby="adventure-title">
+          <div class="section-heading"><div><p class="eyebrow">ЧЕТЫРЕ МИСКИ — ОДНА БОЛЬШАЯ ИСТОРИЯ</p><h2 id="adventure-title">Выбери своё приключение</h2></div><span class="progress-label" id="unlock-label">Открыт 1 из 4 уровней</span></div>
+          <div class="level-grid" id="levels"></div>
+        </section>
+        <div class="home-footer"><span><span class="footer-dot"></span> Уютная игра для маленьких чемпионов</span><span>Нажимай <kbd>E</kbd>, <kbd>Пробел</kbd> или «НЯМ!»</span></div>
+      </section>
+      <section id="game-screen" hidden aria-label="Рамэн-соревнование">
+        <div class="game-heading"><button id="back" class="back-button" aria-label="К выбору уровней">← <span>Все уровни</span></button><div><p class="eyebrow" id="level-number">УРОВЕНЬ 1 ИЗ 4</p><h1 id="level-title">Домашний рамэн</h1></div><button class="icon-button pause-button" id="pause" aria-label="Пауза"><svg><use href="#pause-icon"/></svg></button></div>
+        <div class="race-card">
+          <div class="race-bars" id="race-bars"></div>
+          <div class="scene-wrap" id="scene-wrap"><canvas id="scene" width="1200" height="580" aria-label="Цыплёнок, Олли и котик едят рамэн. Оставшийся рамэн показан на шкалах выше."></canvas><div class="countdown" id="countdown" hidden aria-live="assertive"><span>Приготовились?</span><strong>3</strong></div><div class="scene-toast" id="scene-toast">Палочки на старт!</div><div id="confetti" class="confetti" aria-hidden="true"></div></div>
+        </div>
+        <div class="play-controls" id="play-controls"><div class="round-tip"><span class="tip-icon">♡</span><div><strong id="tip-title">Каждое нажатие — лапшинка!</strong><span id="tip-description">Нажимай в своём ритме. У тебя получится!</span></div></div><button id="eat" class="eat-button" disabled><svg><use href="#bowl-icon"/></svg><span>НЯМ!</span><i>нажми меня</i></button><div class="keyboard-tip"><span><kbd>E</kbd><b>или</b><kbd>Пробел</kbd></span><small>Можно кликать по игре</small></div></div>
+        <div id="result" class="result-panel" hidden role="region" aria-labelledby="result-title"><div><p class="eyebrow" id="result-eyebrow">ВОТ ЭТО АППЕТИТ!</p><h2 id="result-title"></h2><p id="result-description"></p></div><div class="result-actions"><button class="primary" id="next">Следующий уровень <svg><use href="#arrow-icon"/></svg></button><button class="secondary" id="retry">Попробовать ещё раз</button><button class="text-button" id="result-home">Все уровни</button></div></div>
+        <div class="race-footer"><span id="race-status" role="status">Скоро начинаем!</span><span id="race-time">0:00</span><span>Главное — играть с удовольствием ♡</span></div>
+      </section>
+    </main>
+    <p class="sr-only" id="announcer" role="status" aria-live="polite"></p>
+  </div>
+  <dialog id="settings-dialog"><button class="dialog-close" aria-label="Закрыть">×</button><p class="eyebrow">ТВОЁ УЮТНОЕ КАФЕ</p><h2>Как звучит счастье?</h2><p>Настрой музыку и звуки, как тебе нравится.</p><label class="setting-row"><span><strong>Музыка в кафе</strong><small>Нежная мелодия без слов · 100 BPM</small></span><input type="checkbox" id="music-toggle" role="switch" checked></label><label class="setting-row"><span><strong>Весёлые звуки</strong><small>Палочки, лапшинки и маленькие победы</small></span><input type="checkbox" id="effects-toggle" role="switch" checked></label><button class="primary dialog-done">Готово!</button></dialog>
+  <dialog id="help-dialog"><button class="dialog-close" aria-label="Закрыть">×</button><p class="eyebrow">СЕКРЕТ РАМЭН-ЧЕМПИОНА</p><h2>Лапшинка за лапшинкой</h2><ol class="instructions"><li><span>1</span><div><strong>Дождись «ЕДИ!»</strong><p>Олли — это ты. Котик и цыплёнок едят сами.</p></div></li><li><span>2</span><div><strong>Нажимай «НЯМ!»</strong><p>Или E, пробел, левую кнопку мыши по игре. Отдельное нажатие — новая порция. Удерживать не нужно.</p></div></li><li><span>3</span><div><strong>Допей бульон — и готово!</strong><p>Когда лапши не останется, Олли сама поднимет миску. Кто первым всё доел и допил — чемпион!</p></div></li></ol><div class="gentle-note">Ничего страшного, если друг оказался быстрее.<br>Можно попробовать ещё раз ♡</div><button class="primary dialog-done">Всё понятно!</button></dialog>
+  <dialog id="pause-dialog"><p class="eyebrow">ЛАПША ПОДОЖДЁТ</p><h2>Маленький перерыв</h2><div class="pause-bowl"><svg><use href="#bowl-icon"/></svg></div><p>Все друзья ждут тебя за столом.</p><button class="primary" id="resume">Продолжить игру <svg><use href="#arrow-icon"/></svg></button><button class="secondary" id="restart">Начать заново</button><button class="text-button" id="pause-home">К выбору уровней</button></dialog>
+  <noscript><p class="noscript">Чтобы играть, включите JavaScript в браузере.</p></noscript>
+  <p id="fullscreen-message" class="fullscreen-message" role="status" hidden></p>
+</body>
+</html>

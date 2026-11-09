@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-190 -410 380 450">
+<defs><linearGradient id="hair" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#6c4c37"/><stop offset=".5" stop-color="#493326"/><stop offset="1" stop-color="#38291f"/></linearGradient><linearGradient id="shirt" x2="0" y2="1"><stop stop-color="#edc3d4"/><stop offset="1" stop-color="#dda6bf"/></linearGradient></defs>
+<g stroke="#4d3526" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+<path fill="url(#hair)" d="M-142-263C-171-212-144-180-163-149S-167-92-150-76C-137-56-169-41-182-50C-174-21-140-23-132-37C-130-3-95 3-69-20L76-18C106 7 142-8 143-35C156-21 179-27 183-48C159-40 150-55 161-75C182-112 154-143 161-166C176-203 158-246 140-278Z"/>
+<path fill="none" stroke="#87644a" stroke-width="7" opacity=".45" d="M-135-257C-157-215-123-186-146-153S-129-94-145-66M132-257C155-219 125-187 147-153S132-103 149-71"/>
+<path fill="url(#shirt)" d="M-45-140C-79-143-113-128-128-102L-153-41L-117-26L-109 33H108L117-27L151-40L126-102C113-127 79-142 45-140Z"/>
+<path fill="#fac99f" d="M-45-156L-44-136Q0-95 44-136L45-156Z"/>
+<path fill="none" stroke="#bf8ba1" stroke-width="4" d="M-112-81L-105-23M113-81L105-23M-36-119Q0-93 39-119M-83-98L-79-70"/>
+</g></svg>
